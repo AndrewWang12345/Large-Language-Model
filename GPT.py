@@ -5,7 +5,7 @@ from torch.nn import functional as F
 
 block_size = 64
 batch_size = 256
-max_iters = 5000
+max_iters = 500
 learning_rate = 1e-4
 eval_iters = 200
 n_embd = 384
@@ -143,6 +143,7 @@ m = m.to(device)
 logits, loss = m(xb, yb)
 optimizer=torch.optim.AdamW(m.parameters(),lr=1e-4)
 for steps in range(max_iters):
+    print(steps)
     xb,yb=get_batch('train')
     logits,loss=m(xb,yb)
     optimizer.zero_grad(set_to_none=True)
