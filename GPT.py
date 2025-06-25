@@ -5,7 +5,7 @@ from torch.nn import functional as F
 
 block_size = 64
 batch_size = 256
-max_iters = 500
+max_iters = 5000
 learning_rate = 1e-4
 eval_iters = 200
 n_embd = 384

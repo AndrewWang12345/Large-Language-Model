@@ -21,7 +21,7 @@ def merge(ids, pair, idx):
             newids.append(ids[1])
             i += 1
     return newids
-desire_vocab_size = 276
+desire_vocab_size = 256
 num_merges = desire_vocab_size - 256
 ids = list(tokens)
 merges = {}
