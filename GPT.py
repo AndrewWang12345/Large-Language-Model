@@ -115,17 +115,11 @@ class BigramLanguageModel(nn.Module):
         return idx
 
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-with open('input.txt', 'r', encoding='utf-8') as f:
-    text = f.read()
-chars = sorted(set(text))
-vocab_size = len(chars)
-stoi = {ch: i for i, ch in enumerate(chars)}
-itos = {i: ch for i, ch in enumerate(chars)}
-encode = lambda s: [stoi[c] for c in s]
-decode = lambda l: ''.join([itos[i] for i in l])
-data = torch.tensor(encode(text), dtype=torch.long)
+ids = torch.load("tokenized_input.pt")  # Output from your tokenizer
+data = torch.tensor(ids, dtype=torch.long)
+
+# Infer vocab size from max token ID
+vocab_size = max(data).item() + 1
 # print(data[:100])
 n = int(0.9 * len(data))
 train_data = data[:n]
@@ -147,16 +141,16 @@ m = BigramLanguageModel(vocab_size)
 
 m = m.to(device)
 logits, loss = m(xb, yb)
-# optimizer=torch.optim.AdamW(m.parameters(),lr=1e-4)
-# for steps in range(max_iters):
-#     xb,yb=get_batch('train')
-#     logits,loss=m(xb,yb)
-#     optimizer.zero_grad(set_to_none=True)
-#     loss.backward()
-#     optimizer.step()
+optimizer=torch.optim.AdamW(m.parameters(),lr=1e-4)
+for steps in range(max_iters):
+    xb,yb=get_batch('train')
+    logits,loss=m(xb,yb)
+    optimizer.zero_grad(set_to_none=True)
+    loss.backward()
+    optimizer.step()
 PATH = "model.pth"
-# torch.save(m, PATH)
-model = torch.load(PATH)
-#print(loss)
-context = torch.zeros((1, 1), dtype=torch.long, device=device)
-print(decode(model.generate(context, max_new_tokens=500)[0].tolist()))
+torch.save(m, PATH)
+# model = torch.load(PATH)
+# print(loss)
+# context = torch.zeros((1, 1), dtype=torch.long, device=device)
+# print(decode(model.generate(context, max_new_tokens=500)[0].tolist()))
